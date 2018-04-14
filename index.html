@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Go batty! or, Hear hear!</title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<script>
+window.onload = function () {
+  console.log('hello world');
+
+  //take 1
+  //https://developer.mozilla.org/en-US/Apps/Fundamentals/Audio_and_video_delivery/WebAudio_playbackRate_explained
+  var a = document.getElementById("myAudio");
+  var p = document.getElementById("pbr");
+  var c = document.getElementById("currentPbr");
+  p.addEventListener('input',function(){
+    c.innerHTML = p.value;
+    a.playbackRate = p.value;
+  },false);
+
+};
+
+//take 2
+//https://stackoverflow.com/questions/25157513/javascript-pitch-shift-with-time-stretch/25160407#25160407
+var battyPlayer = new Audio()
+var fullyBatty = function() {
+  console.log("inside fullyBatty");
+  battyPlayer.controls = "controls";
+  battyPlayer.src = "16000Hz.ogg";
+  battyPlayer.play();
+}
+var lessBatty = function() {
+  console.log("inside lessBatty");
+  battyPlayer.src = "16000Hz.ogg";
+  battyPlayer.mozPreservesPitch = false;
+  battyPlayer.playbackRate = 0.75;
+  battyPlayer.play();
+}
+//lessBatty();
+
+</script>
+
+</head>
+<body style="padding:0.667em;">
+<img src="fruit-bat-photo.igam-ogam-546514-unsplash.jpg" width="450px" style="float: left; margin: 0 2em 1em 0;" />
+
+<audio id="myAudio" controls>
+  <source src="mpthreetest.archiveorg.mp3" />
+  Your browser does not support the <code>audio</code> element.
+</audio>
+<form>
+  <input id="pbr" type="range" value="1" min="0.5" max="4" step="0.1" >
+  <p>Playback Rate <span id="currentPbr">1</span></p>
+</form>
+
+<hr />
+
+<form>
+<input type="button" value="hear hear" onclick="fullyBatty()" />
+<input type="button" value="hear more hear" onclick="lessBatty()" />
+</form>
+
+
+</body>
+</html>
