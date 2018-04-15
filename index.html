@@ -18,7 +18,17 @@ window.onload = function () {
     a.playbackRate = p.value;
   },false);
 */
+
+  function hasGetUserMedia() {
+    console.log("inside hasGetUserMedia");
+    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  }
+
 };
+const audioSelect = document.querySelector('select#audioSource');
+navigator.mediaDevices.enumerateDevices()
+  .then(gotDevices).then(getStream).catch(handleError);
+audioSelect.onchange = getStream;
 
 //take 2
 //https://stackoverflow.com/questions/25157513/javascript-pitch-shift-with-time-stretch/25160407#25160407
@@ -31,6 +41,69 @@ var howBatty = function(battiness) {
   battyPlayer.play();
 }
 //lessBatty();
+
+
+var checkingThings = function() {
+  if (hasGetUserMedia()) {
+    console.log("you have getUserMedia!");
+  } else {
+    console.log("you do not have getUserMedia :( :( ");
+  }
+
+  const constraints = {
+    audio: true
+  };
+  const audio = document.querySelector('audio');
+  function handleSuccess(stream) {
+    //!!!!!!!!!!!!!!
+    //audio.srcObject = stream;
+    console.log("even more success!");
+  }
+  function handleError(error) {
+    console.log("Reeeejected!");
+  }
+  navigator.mediaDevices.getUserMedia(constraints).
+    then(handleSuccess).catch(handleError);
+}
+
+
+function gotDevices(deviceInfos) {
+  for (var i = 0; i !== deviceInfos.length; ++i) {
+    var deviceInfo = deviceInfos[i];
+    var option = document.createElement('option');
+    option.value = deviceInfo.deviceId;
+    if (deviceInfo.kind === 'audioinput') {
+      option.text = deviceInfo.label ||
+        'microphone ' + (audioSelect.length + 1);
+      audioSelect.appendChild(option);
+      console.log("audioSelect-ed!")
+    } else {
+      console.log('Found one other kind of source/device: ', deviceInfo);
+    }
+  }
+}
+
+function getStream() {
+  if (window.stream) {
+    window.stream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+  }
+  var constraints = {
+    audio: {
+      deviceId: {exact: audioSelect.value}
+    }
+  };
+  navigator.mediaDevices.getUserMedia(constraints).
+    then(gotStream).catch(handleError);
+}
+function gotStream(stream) {
+  window.stream = stream; // make stream available to console
+}
+
+function handleError(error) {
+  console.error('Error: ', error);
+}
 
 </script>
 
@@ -50,12 +123,17 @@ var howBatty = function(battiness) {
 <hr />
  -->
 <form>
-<input type="button" value="hear hear" onclick="howBatty(1.0)" />
-<input type="button" value="hear more hear (0.5)" onclick="howBatty(0.5)" />
+  <input type="button" value="hear hear" onclick="howBatty(1.0)">
+  <input type="button" value="hear more hear (0.5)" onclick="howBatty(0.5)">
 
-<hr />
-<input type="file" accept="audio/*;capture=microphone">
+  <hr />
+  <!--<input type="file" accept="audio/*;capture=microphone">-->
+  <input type="button" value="are we good?" onclick="checkingThings()">
 
+  <div class="select">
+    <label for="audioSource">Audio source: </label>
+    <select id="audioSource"></select>
+  </div>
 </form>
 
 
