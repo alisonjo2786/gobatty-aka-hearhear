@@ -4,12 +4,22 @@
   <title>Go batty! or, Hear hear!</title>
   <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
-<script>
-window.onload = function () {
-  console.log('hello world');
+  <script src="node_modules/howler/dist/howler.js"></script>
+  <script>
+  window.onload = function () {
+    console.log('hello world');
 
-}
-</script>
+    var sound = new Howl({
+      src: ['mpthreetest.archiveorg.mp3'],
+      rate: 0.5
+    });
+    sound.play();
+
+  }
+
+
+  </script>
+
 
 </head>
 <body style="padding:0.667em;">
